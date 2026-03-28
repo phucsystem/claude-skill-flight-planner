@@ -29,5 +29,11 @@ venv/
 Thumbs.db
 desktop.ini
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # Node (if using flow-diagram locally)
 node_modules/
+
+/plans/**
+/docs/**

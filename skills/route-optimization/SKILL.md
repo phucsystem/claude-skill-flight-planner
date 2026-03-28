@@ -1,6 +1,7 @@
 ---
 name: route-optimization
-description: Use when direct flights are expensive and traveler is open to layovers. Triggers on cheaper route, alternative routing, transit hub, is a layover worth it, save money with connection.
+description: "Use when direct flights are expensive and traveler is open to layovers. Triggers on: cheaper route, alternative routing, transit hub, is a layover worth it, save money with connection."
+allowed-tools: Read
 ---
 
 # Route Optimization - Tối Ưu Lộ Trình Qua Điểm Trung Chuyển

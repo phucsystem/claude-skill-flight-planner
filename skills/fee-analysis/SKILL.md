@@ -1,6 +1,7 @@
 ---
 name: fee-analysis
-description: Use when advertised flight price seems too good, or when comparing LCC vs legacy carrier total costs. Triggers on hidden fees, baggage cost, true price, real cost, checkout surprise.
+description: "Use when advertised flight price seems too good, or when comparing LCC vs legacy carrier total costs. Triggers on: hidden fees, baggage cost, true price, real cost, checkout surprise."
+allowed-tools: Read
 ---
 
 # Fee Analysis - Phân Tích và Loại Bỏ Phí Phụ Thu

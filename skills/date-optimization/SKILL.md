@@ -1,6 +1,7 @@
 ---
 name: date-optimization
-description: Use when traveler has flexible dates and wants to find the cheapest departure/return combination. Triggers on cheapest day to fly, flexible dates, when to book, price calendar.
+description: "Use when traveler has flexible dates and wants to find the cheapest departure/return combination. Triggers on: cheapest day to fly, flexible dates, when to book, price calendar."
+allowed-tools: Bash(python *), Read
 ---
 
 # Date Optimization - Quét Ngày Bay Tối Ưu

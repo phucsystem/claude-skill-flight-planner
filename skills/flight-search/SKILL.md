@@ -1,6 +1,7 @@
 ---
 name: flight-search
-description: Use when searching for flights, comparing airlines, or finding virtual interlining combinations across multiple carriers. Triggers on find flights, search routes, compare airlines, best price.
+description: "Use when searching for flights, comparing airlines, or finding virtual interlining combinations across multiple carriers. Triggers on: find flights, search routes, compare airlines, best price."
+allowed-tools: Bash(python *), Read
 ---
 
 # Flight Search - Tìm Route Combination Ẩn
@@ -122,7 +123,7 @@ Send to downstream skills:
 
 When API is configured, execute:
 1. Read `references/api-integration.md` for setup
-2. Run `../../scripts/kiwi_client.py` with parameters
+2. Run the Kiwi client script from the plugin root: `python scripts/kiwi_client.py` with parameters
 3. Merge API results with AI-knowledge estimates
 4. Real prices override estimates for matching routes
 

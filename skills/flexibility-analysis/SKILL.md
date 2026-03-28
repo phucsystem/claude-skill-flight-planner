@@ -1,6 +1,7 @@
 ---
 name: flexibility-analysis
-description: Use when deciding between flexible and non-refundable tickets, or when travel plans might change. Triggers on refundable vs non-refundable, cancel risk, change fee, should I buy flexible ticket.
+description: "Use when deciding between flexible and non-refundable tickets, or when travel plans might change. Triggers on: refundable vs non-refundable, cancel risk, change fee, should I buy flexible ticket."
+allowed-tools: Read
 ---
 
 # Flexibility Analysis - Phân Tích Rủi Ro Linh Hoạt

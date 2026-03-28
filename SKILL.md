@@ -1,6 +1,8 @@
 ---
-name: travel-optimization-engine
-description: Use when planning flights, comparing ticket prices, or asking about flight costs, airline fees, travel dates, or route options. Triggers on booking flights, cheap tickets, flight search, vé máy bay, săn vé rẻ, tối ưu chi phí bay, đặt vé, virtual interlining, or any flight-related cost question.
+name: flight-planner
+description: "Flight cost optimization with 8 specialized skills. Use when planning flights, comparing ticket prices, or asking about flight costs, airline fees, travel dates, route options. Triggers on: booking flights, cheap tickets, flight search, vé máy bay, săn vé rẻ, tối ưu chi phí bay, đặt vé, virtual interlining, or any flight-related cost question."
+argument-hint: "[origin] [destination] [dates]"
+allowed-tools: Bash(python *), Read, Glob, Grep
 ---
 
 # Travel Optimization Engine

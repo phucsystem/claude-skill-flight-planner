@@ -1,6 +1,9 @@
 ---
 name: hidden-city-strategy
-description: Use when user explicitly asks about hidden city ticketing, skiplagging, or throwaway ticketing. Requires explicit consent before analysis. Triggers on hidden city, skiplag, get off at layover.
+description: "Use ONLY when user explicitly asks about hidden city ticketing, skiplagging, or throwaway ticketing. Requires explicit consent. Legal risks involved. Triggers on: hidden city, skiplag, get off at layover."
+allowed-tools: Read
+disable-model-invocation: true
+context: fork
 ---
 
 # Hidden City Strategy - Chiến Lược Vé Hidden City

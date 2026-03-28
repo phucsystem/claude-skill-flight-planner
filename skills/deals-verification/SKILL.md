@@ -1,6 +1,7 @@
 ---
 name: deals-verification
-description: Use when looking for airline promo codes, flash sales, or credit card discounts before booking. Triggers on promo code, discount, sale, deal, coupon, cashback, loyalty discount.
+description: "Use when looking for airline promo codes, flash sales, or credit card discounts before booking. Triggers on: promo code, discount, sale, deal, coupon, cashback, loyalty discount."
+allowed-tools: Bash(python *), Read
 ---
 
 # Deals Verification - Liệt Kê Deal Tiềm Năng

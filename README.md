@@ -1,27 +1,34 @@
-# Travel Optimization Engine
+# Flight Planner — Claude Code Skill
 
-> Bộ 8 AI Skills tự động hóa toàn bộ quy trình tối ưu chi phí vé máy bay.
-> Tiết kiệm 30-66% cho cá nhân/gia đình, 10-15% cho doanh nghiệp.
+> 8 AI Skills for flight cost optimization. Save 30-66% personal, 10-15% corporate.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Skills: 8](https://img.shields.io/badge/Skills-8-blue.svg)](#8-skills)
-[![Platform: Antigravity](https://img.shields.io/badge/Platform-Antigravity-purple.svg)](https://zalo.me/g/igkywu632)
+[![Platform: Claude Code](https://img.shields.io/badge/Platform-Claude_Code-orange.svg)](https://code.claude.com)
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
-# Clone vào thư mục skills của bạn
-git clone https://github.com/dotanminh/travel-optimization-engine.git
+# Clone the repo
+git clone https://github.com/phucsystem/claude-skill-flight-planner.git
 
-# Di chuyển vào thư mục agent skills
-# Windows:
-move travel-optimization-engine .agents\skill\
-
-# macOS/Linux:
-mv travel-optimization-engine .agents/skill/
+# Add to Claude Code
+claude --add-dir /path/to/claude-skill-flight-planner
 ```
+
+### Available Skills
+
+| Command | Description |
+|---------|-------------|
+| `/flight-planner` | Full optimization pipeline (orchestrator) |
+| `/date-optimization` | Find cheapest travel dates |
+| `/flight-search` | Multi-source flight search with virtual interlining |
+| `/fee-analysis` | Hidden fee analysis, true cost calculation |
+| `/route-optimization` | Hub-based route alternatives |
+| `/deals-verification` | Promo codes and discount verification |
+| `/flexibility-analysis` | Refundable vs non-refundable break-even |
+| `/negotiation-email` | Corporate discount email templates |
+| `/hidden-city-strategy` | Skiplagging analysis (manual invoke only, legal risk) |
 
 ### Usage
 

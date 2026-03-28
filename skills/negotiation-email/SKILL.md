@@ -1,6 +1,7 @@
 ---
 name: negotiation-email
-description: Use when a company wants to negotiate corporate flight discounts with airlines. Triggers on corporate rate, bulk discount, airline negotiation, volume pricing, company travel budget.
+description: "Use when a company wants to negotiate corporate flight discounts with airlines. Triggers on: corporate rate, bulk discount, airline negotiation, volume pricing, company travel budget."
+allowed-tools: Read
 ---
 
 # Negotiation Email - Email Thương Lượng Giá
