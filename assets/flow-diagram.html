@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travel Optimization Engine - System Flow</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #0a0e1a;
+    color: #e2e8f0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === HEADER === */
+  .header {
+    text-align: center;
+    padding: 48px 24px 32px;
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+  }
+
+  .header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa, #f472b6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .header p {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 400;
+  }
+
+  /* === MAIN CONTAINER === */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 64px;
+  }
+
+  /* === FLOW CONNECTOR (vertical line between phases) === */
+  .phase-connector {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .phase-connector .line {
+    width: 3px;
+    height: 40px;
+    background: linear-gradient(to bottom, #334155, #60a5fa);
+    border-radius: 2px;
+    position: relative;
+  }
+
+  .phase-connector .line::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    border-right: 2.5px solid #60a5fa;
+    border-bottom: 2.5px solid #60a5fa;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  /* === USER INPUT BOX === */
+  .user-input {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    border: 1.5px solid #334155;
+    border-radius: 16px;
+    padding: 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .user-input::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  }
+
+  .user-input .icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .user-input h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+  }
+
+  .user-input .examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .user-input .examples span {
+    background: #1e3a5f;
+    color: #93c5fd;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid #2563eb33;
+  }
+
+  /* === PHASE SECTION === */
+  .phase {
+    margin-bottom: 8px;
+  }
+
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .phase-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  .phase-header h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #f1f5f9;
+  }
+
+  .phase-header .phase-desc {
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 400;
+    margin-left: auto;
+  }
+
+  /* Phase colors */
+  .phase-1 .phase-number { background: #1d4ed8; color: #dbeafe; }
+  .phase-2 .phase-number { background: #7c3aed; color: #ede9fe; }
+  .phase-3 .phase-number { background: #059669; color: #d1fae5; }
+  .phase-4 .phase-number { background: #d97706; color: #fef3c7; }
+  .phase-5 .phase-number { background: #dc2626; color: #fee2e2; }
+
+  /* === SKILL CARDS === */
+  .skills-row {
+    display: grid;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+
+  .skills-row.cols-1 { grid-template-columns: 1fr; max-width: 600px; margin-left: auto; margin-right: auto; }
+  .skills-row.cols-2 { grid-template-columns: 1fr 1fr; }
+  .skills-row.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .skill-card {
+    background: #111827;
+    border: 1.5px solid #1e293b;
+    border-radius: 14px;
+    padding: 20px;
+    position: relative;
+    transition: all 0.25s ease;
+    overflow: hidden;
+  }
+
+  .skill-card:hover {
+    border-color: #334155;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .skill-card .card-accent {
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 14px 0 0 14px;
+  }
+
+  .skill-card .skill-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .skill-card h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+  }
+
+  .skill-card .skill-name-code {
+    font-size: 0.72rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: #64748b;
+    margin-bottom: 10px;
+  }
+
+  .skill-card .skill-desc {
+    font-size: 0.82rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .skill-card .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .skill-card .tag {
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .tag.api { background: #1e3a5f; color: #93c5fd; }
+  .tag.script { background: #1a3329; color: #6ee7b7; }
+  .tag.ai { background: #312e54; color: #c4b5fd; }
+  .tag.web { background: #3b2317; color: #fdba74; }
+  .tag.text { background: #3b1730; color: #f9a8d4; }
+
+  /* Card accent colors per phase */
+  .phase-1 .card-accent { background: #3b82f6; }
+  .phase-1 .skill-num { background: #1e3a5f; color: #93c5fd; }
+
+  .phase-2 .card-accent { background: #8b5cf6; }
+  .phase-2 .skill-num { background: #312e54; color: #c4b5fd; }
+
+  .phase-3 .card-accent { background: #10b981; }
+  .phase-3 .skill-num { background: #1a3329; color: #6ee7b7; }
+
+  .phase-4 .card-accent { background: #f59e0b; }
+  .phase-4 .skill-num { background: #3b2f17; color: #fcd34d; }
+
+  .phase-5 .card-accent { background: #ef4444; }
+  .phase-5 .skill-num { background: #3b1717; color: #fca5a5; }
+
+  /* === DATA FLOW ARROWS === */
+  .data-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 0;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .data-flow .arrow-line {
+    width: 40px;
+    height: 1.5px;
+    background: #334155;
+  }
+
+  .data-flow .data-label {
+    background: #1e293b;
+    padding: 3px 10px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    white-space: nowrap;
+  }
+
+  /* === CONDITIONAL BOX === */
+  .conditional-wrapper {
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px dashed #f59e0b44;
+    margin-left: 18px;
+  }
+
+  .conditional-wrapper::before {
+    content: 'CONDITIONAL';
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #f59e0b;
+    background: #0a0e1a;
+    padding: 0 8px;
+    letter-spacing: 1px;
+  }
+
+  .condition-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .condition-badge.if-corp { background: #f59e0b22; color: #fbbf24; border: 1px solid #f59e0b33; }
+  .condition-badge.if-flex { background: #8b5cf622; color: #a78bfa; border: 1px solid #8b5cf633; }
+  .condition-badge.if-ask { background: #ef444422; color: #f87171; border: 1px solid #ef444433; }
+
+  /* === OUTPUT SECTION === */
+  .output-box {
+    background: linear-gradient(135deg, #0f2027 0%, #0a0e1a 50%, #1a0a2e 100%);
+    border: 1.5px solid #334155;
+    border-radius: 16px;
+    padding: 28px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .output-box::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+  }
+
+  .output-box h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 16px;
+  }
+
+  .output-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+
+  .output-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #1118274d;
+    border-radius: 10px;
+    border: 1px solid #1e293b;
+  }
+
+  .output-item .oi-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    background: #1e3a5f;
+    color: #93c5fd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .output-item span {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+  }
+
+  /* === LEGEND === */
+  .legend {
+    margin-top: 40px;
+    padding: 24px;
+    background: #111827;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+  }
+
+  .legend h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .legend-item span {
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+
+  /* === TARGET GROUPS === */
+  .targets {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 32px;
+  }
+
+  .target-card {
+    background: #111827;
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .target-card .t-icon { font-size: 1.8rem; margin-bottom: 8px; }
+  .target-card h4 { font-size: 0.9rem; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+  .target-card .t-saving {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin: 6px 0;
+  }
+  .target-card p { font-size: 0.78rem; color: #94a3b8; line-height: 1.4; }
+
+  .t-personal .t-saving { color: #34d399; }
+  .t-corp .t-saving { color: #60a5fa; }
+  .t-freelance .t-saving { color: #f472b6; }
+
+  /* === PARALLEL INDICATOR === */
+  .parallel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    background: #7c3aed22;
+    border: 1px solid #7c3aed44;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 12px;
+  }
+
+  .parallel-badge::before {
+    content: '⚡';
+    font-size: 0.8rem;
+  }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 768px) {
+    .skills-row.cols-2, .skills-row.cols-3 { grid-template-columns: 1fr; }
+    .targets { grid-template-columns: 1fr; }
+    .header h1 { font-size: 1.6rem; }
+    .output-items { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>Travel Optimization Engine</h1>
+  <p>8 AI Skills — Hệ Thống Hỗ Trợ Quyết Định Tối Ưu Chi Phí Vé Máy Bay</p>
+</div>
+
+<div class="container">
+
+  <!-- TARGET AUDIENCE -->
+  <div class="targets">
+    <div class="target-card t-personal">
+      <div class="t-icon">👨‍👩‍👧‍👦</div>
+      <h4>Cá nhân & Gia đình</h4>
+      <div class="t-saving">30-66%</div>
+      <p>Tiết kiệm chi phí vé so với đặt trực tiếp không có chiến lược</p>
+    </div>
+    <div class="target-card t-corp">
+      <div class="t-icon">🏢</div>
+      <h4>Doanh nghiệp</h4>
+      <div class="t-saving">10-15%</div>
+      <p>Tiết kiệm trên toàn bộ ngân sách công tác năm + báo cáo kiểm toán</p>
+    </div>
+    <div class="target-card t-freelance">
+      <div class="t-icon">💻</div>
+      <h4>Freelancer & Remote</h4>
+      <div class="t-saving">Smart Risk</div>
+      <p>Phân tích rủi ro linh hoạt, tối ưu lộ trình qua hub rẻ hơn</p>
+    </div>
+  </div>
+
+  <!-- FLOW START: USER INPUT -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="user-input">
+    <div class="icon">✈️</div>
+    <h3>User Input - Ý Định Bay</h3>
+    <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:8px;">Người dùng nhập yêu cầu bất kỳ liên quan đến vé máy bay</p>
+    <div class="examples">
+      <span>"HAN to SFO next month"</span>
+      <span>"Tìm vé rẻ đi Nhật"</span>
+      <span>"Gia đình 4 người đi Phú Quốc"</span>
+      <span>"Công tác SGN-HAN hàng tuần"</span>
+    </div>
+  </div>
+
+  <!-- PHASE 1: COLLECT PROFILE -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="phase phase-1">
+    <div class="phase-header">
+      <div class="phase-number">P1</div>
+      <h2>Thu Thập Hồ Sơ Hành Khách</h2>
+      <span class="phase-desc">Hỏi 1 lần, dùng cho toàn bộ quá trình</span>
+    </div>
+    <div class="skills-row cols-1">
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">O</div>
+        <h4>Orchestrator</h4>
+        <div class="skill-name-code">SKILL.md (parent)</div>
+        <div class="skill-desc">
+          Thu thập: origin, destination, dates, passengers (bắt buộc) +
+          baggage, flexibility, loyalty, budget, cabin class (tuỳ chọn).
+          Suy luận mặc định nếu user nhập tối giản.
+        </div>
+        <div class="tags">
+          <span class="tag ai">AI Profile Inference</span>
+          <span class="tag script">user-profile-schema.md</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 2: SEARCH -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="phase phase-2">
+    <div class="phase-header">
+      <div class="phase-number">P2</div>
+      <h2>Tìm Kiếm</h2>
+      <span class="phase-desc">Chạy song song 2 skills</span>
+    </div>
+    <div class="parallel-badge">PARALLEL EXECUTION</div>
+    <div class="skills-row cols-2">
+      <!-- Skill 1 -->
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">1</div>
+        <h4>Quét Ngày Bay Tối Ưu</h4>
+        <div class="skill-name-code">skills/date-optimization/</div>
+        <div class="skill-desc">
+          Build ma trận ngày-giá ±5-14 ngày. Tìm TOP 3 tổ hợp ngày rẻ nhất
+          với lý do cụ thể (ngày giữa tuần, off-peak, v.v.)
+        </div>
+        <div class="tags">
+          <span class="tag api">Amadeus API</span>
+          <span class="tag api">Kiwi API</span>
+          <span class="tag script">date_matrix.py</span>
+        </div>
+      </div>
+      <!-- Skill 2 -->
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">2</div>
+        <h4>Tìm Route Combination Ẩn</h4>
+        <div class="skill-name-code">skills/flight-search/</div>
+        <div class="skill-desc">
+          Query song song Amadeus + Kiwi Tequila. Virtual interlining: ghép vé
+          nhiều hãng thành 1 hành trình rẻ hơn 30-40%.
+        </div>
+        <div class="tags">
+          <span class="tag api">Amadeus API</span>
+          <span class="tag api">Kiwi Tequila</span>
+          <span class="tag script">parallel_search.py</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-flow">
+      <div class="arrow-line"></div>
+      <div class="data-label">optimal_dates[] → flight-search</div>
+      <div class="arrow-line"></div>
+    </div>
+  </div>
+
+  <!-- PHASE 3: ANALYZE -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="phase phase-3">
+    <div class="phase-header">
+      <div class="phase-number">P3</div>
+      <h2>Phân Tích</h2>
+      <span class="phase-desc">Chạy tuần tự với kết quả từ Phase 2</span>
+    </div>
+    <div class="skills-row cols-3">
+      <!-- Skill 3 -->
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">3</div>
+        <h4>Tối Ưu Lộ Trình</h4>
+        <div class="skill-name-code">skills/route-optimization/</div>
+        <div class="skill-desc">
+          So sánh bay thẳng vs qua hub. Tính savings/hour cho mỗi route.
+          Flag route cần xe/tàu đất liền.
+        </div>
+        <div class="tags">
+          <span class="tag script">route_analyzer.py</span>
+          <span class="tag ai">Hub Database</span>
+        </div>
+      </div>
+      <!-- Skill 4 -->
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">4</div>
+        <h4>Phân Tích Phí Ẩn</h4>
+        <div class="skill-name-code">skills/fee-analysis/</div>
+        <div class="skill-desc">
+          Tính true_total = base + tax + all fees. Re-rank vé theo giá thực.
+          Chiến lược giảm phí cho từng loại.
+        </div>
+        <div class="tags">
+          <span class="tag script">fee_calculator.py</span>
+          <span class="tag ai">Airline Fee DB</span>
+        </div>
+      </div>
+      <!-- Skill 5 -->
+      <div class="skill-card">
+        <div class="card-accent"></div>
+        <div class="skill-num">5</div>
+        <h4>Xác Minh Deals</h4>
+        <div class="skill-name-code">skills/deals-verification/</div>
+        <div class="skill-desc">
+          Tìm mã giảm giá còn hiệu lực. Phân loại HIGH/MEDIUM/LOW confidence.
+          Disclaimer bắt buộc: chưa test qua live API.
+        </div>
+        <div class="tags">
+          <span class="tag web">Web Search</span>
+          <span class="tag ai">AI Knowledge</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-flow">
+      <div class="data-label">flight_options[] → fee-analysis → re-ranked by true_total</div>
+    </div>
+  </div>
+
+  <!-- PHASE 4: ASSESS (CONDITIONAL) -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="phase phase-4">
+    <div class="phase-header">
+      <div class="phase-number">P4</div>
+      <h2>Đánh Giá (Có Điều Kiện)</h2>
+      <span class="phase-desc">Chỉ chạy khi đáp ứng điều kiện</span>
+    </div>
+
+    <div class="conditional-wrapper">
+      <div class="skills-row cols-3" style="margin-top: 16px;">
+        <!-- Skill 6 -->
+        <div class="skill-card">
+          <div class="card-accent"></div>
+          <div class="condition-badge if-corp">IF booking_type == corporate</div>
+          <div class="skill-num">6</div>
+          <h4>Email Thương Lượng Giá</h4>
+          <div class="skill-name-code">skills/negotiation-email/</div>
+          <div class="skill-desc">
+            Tạo email chuyên nghiệp gửi sales team hãng bay.
+            Không tiết lộ giá max, dẫn chứng thị trường, deadline rõ ràng.
+          </div>
+          <div class="tags">
+            <span class="tag text">Text Generation</span>
+            <span class="tag ai">Email Templates</span>
+          </div>
+        </div>
+        <!-- Skill 7 -->
+        <div class="skill-card">
+          <div class="card-accent"></div>
+          <div class="condition-badge if-flex">IF schedule uncertain</div>
+          <div class="skill-num">7</div>
+          <h4>Phân Tích Rủi Ro</h4>
+          <div class="skill-name-code">skills/flexibility-analysis/</div>
+          <div class="skill-desc">
+            Điểm linh hoạt 0-100. Chi phí đổi/huỷ. Break-even: xác suất bao
+            nhiêu % thì vé linh hoạt đáng tiền hơn.
+          </div>
+          <div class="tags">
+            <span class="tag ai">Break-even Calc</span>
+            <span class="tag ai">Fare Rules</span>
+          </div>
+        </div>
+        <!-- Skill 8 -->
+        <div class="skill-card">
+          <div class="card-accent"></div>
+          <div class="condition-badge if-ask">ONLY IF user explicitly asks</div>
+          <div class="skill-num">8</div>
+          <h4>Hidden City Strategy</h4>
+          <div class="skill-name-code">skills/hidden-city-strategy/</div>
+          <div class="skill-desc">
+            Kiểm tra điều kiện loại trừ trước. Nếu đủ điều kiện → phân tích
+            savings + mọi rủi ro. LUÔN yêu cầu human review.
+          </div>
+          <div class="tags">
+            <span class="tag ai">Risk Analysis</span>
+            <span class="tag web">Enforcement DB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 5: OUTPUT -->
+  <div class="phase-connector"><div class="line"></div></div>
+
+  <div class="phase phase-5">
+    <div class="phase-header">
+      <div class="phase-number">P5</div>
+      <h2>Báo Cáo Tổng Hợp</h2>
+      <span class="phase-desc">Kết quả cuối cùng</span>
+    </div>
+
+    <div class="output-box">
+      <h3>📊 Báo Cáo So Sánh Tổng Hợp</h3>
+      <div class="output-items">
+        <div class="output-item">
+          <div class="oi-num">1</div>
+          <span><strong>Tóm Tắt</strong> — Lựa chọn tốt nhất + tiết kiệm</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">2</div>
+          <span><strong>Phân Tích Ngày</strong> — Khung thời gian tối ưu</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">3</div>
+          <span><strong>Top 5 Lựa Chọn</strong> — Xếp hạng theo giá thực</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">4</div>
+          <span><strong>Lộ Trình Thay Thế</strong> — Tiết kiệm qua hub</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">5</div>
+          <span><strong>Deals Áp Dụng</strong> — Giảm giá đã xác minh</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">6</div>
+          <span><strong>Đánh Giá Rủi Ro</strong> — Điểm linh hoạt</span>
+        </div>
+        <div class="output-item">
+          <div class="oi-num">7</div>
+          <span><strong>Hành Động</strong> — Các bước đặt vé cụ thể</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #1e293b;">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 0.78rem; color: #64748b;">
+          <span>📌 advertised_price → true_total comparison</span>
+          <span>🏷️ Tags: [DIRECT] [1-STOP] [INTERLINING] [LCC] [LEGACY]</span>
+          <span>💱 USD (international) / VND (domestic VN)</span>
+          <span>🔗 Booking links where available</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <h3>Chú Giải — Nguồn Dữ Liệu & Loại Skill</h3>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <div class="legend-color" style="background: #3b82f6;"></div>
+        <span><strong>Phase 1</strong> — Thu thập hồ sơ</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #8b5cf6;"></div>
+        <span><strong>Phase 2</strong> — Tìm kiếm (Song song)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #10b981;"></div>
+        <span><strong>Phase 3</strong> — Phân tích (Tuần tự)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #f59e0b;"></div>
+        <span><strong>Phase 4</strong> — Đánh giá có điều kiện</span>
+      </div>
+      <div class="legend-item">
+        <span class="tag api" style="font-size:0.72rem;">API</span>
+        <span>Amadeus / Kiwi Tequila API</span>
+      </div>
+      <div class="legend-item">
+        <span class="tag script" style="font-size:0.72rem;">SCRIPT</span>
+        <span>Python script (deterministic)</span>
+      </div>
+      <div class="legend-item">
+        <span class="tag ai" style="font-size:0.72rem;">AI</span>
+        <span>AI knowledge / analysis</span>
+      </div>
+      <div class="legend-item">
+        <span class="tag web" style="font-size:0.72rem;">WEB</span>
+        <span>Web search (deals, policies)</span>
+      </div>
+      <div class="legend-item">
+        <span class="tag text" style="font-size:0.72rem;">TEXT</span>
+        <span>Text generation (emails)</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
