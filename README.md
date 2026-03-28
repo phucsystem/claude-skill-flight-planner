@@ -1,196 +1,208 @@
-# Flight Planner — Claude Code Skill
+# Travel Optimization Engine — Claude Code Skill
 
-> 8 AI Skills for flight cost optimization. Save 30-66% personal, 10-15% corporate.
+> Decision support system for flight cost optimization. Save 30-66% on personal travel, 10-15% on corporate bookings.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Skills: 8](https://img.shields.io/badge/Skills-8-blue.svg)](#8-skills)
-[![Platform: Claude Code](https://img.shields.io/badge/Platform-Claude_Code-orange.svg)](https://code.claude.com)
+[![Skills: 8](https://img.shields.io/badge/Skills-8-blue.svg)](#available-skills)
+[![Platform: Claude Code](https://img.shields.io/badge/Platform-Claude_Code-blue.svg)](https://code.claude.com)
 
-## Installation
+## Quick Start
+
+### Installation
 
 ```bash
-# Clone the repo
 git clone https://github.com/phucsystem/claude-skill-flight-planner.git
-
-# Add to Claude Code
 claude --add-dir /path/to/claude-skill-flight-planner
 ```
 
-### Available Skills
+### Usage
+
+Just tell Claude your travel plans:
+
+```
+"I want to fly from Hanoi to San Francisco, 2 adults + 1 child,
+mid-June 2026, flexible ±1 week on dates"
+```
+
+Claude automatically triggers the appropriate skills to analyze pricing, fees, routes, and deals.
+
+## Available Skills
 
 | Command | Description |
 |---------|-------------|
 | `/flight-planner` | Full optimization pipeline (orchestrator) |
-| `/date-optimization` | Find cheapest travel dates |
+| `/date-optimization` | Find cheapest travel dates within flexibility window |
 | `/flight-search` | Multi-source flight search with virtual interlining |
-| `/fee-analysis` | Hidden fee analysis, true cost calculation |
+| `/fee-analysis` | Hidden fee analysis and true cost calculation |
 | `/route-optimization` | Hub-based route alternatives |
 | `/deals-verification` | Promo codes and discount verification |
-| `/flexibility-analysis` | Refundable vs non-refundable break-even |
+| `/flexibility-analysis` | Refundable vs non-refundable break-even analysis |
 | `/negotiation-email` | Corporate discount email templates |
-| `/hidden-city-strategy` | Skiplagging analysis (manual invoke only, legal risk) |
+| `/hidden-city-strategy` | Skiplagging analysis (manual invoke, legal risk disclosure) |
 
-### Usage
+## How It Works
 
-Chỉ cần nói với AI:
+### 5-Phase Workflow
+
+**Phase 1: Collect** — Gather origin, destination, dates, passengers, preferences
+
+**Phase 2: Search** (Parallel)
+- Date optimization: Find cheapest dates
+- Flight search: Search across multiple sources
+- Results merged for best options
+
+**Phase 3: Analyze** (Sequential)
+- Route optimization: Find cheaper hub alternatives
+- Fee analysis: Deconstruct hidden fees, recalculate true total
+- Deals verification: Find applicable promo codes
+
+**Phase 4: Assess** (Conditional)
+- Flexibility analysis: Refundable vs non-refundable risk
+- Negotiation email: Corporate volume discounts (if corporate booking)
+- Hidden city strategy: Skiplagging analysis (if user asks + consent)
+
+**Phase 5: Output** — Generate consolidated comparison report with savings breakdown
+
+## Two Operating Modes
+
+### AI-Knowledge Mode (No API Required)
+
+- Uses AI training data for flight pricing, trends, airline policies
+- Sufficient for most use cases
+- Works immediately without setup
+
+### API-Enhanced Mode (Real-Time Data)
+
+Configure API keys for real-time pricing and expanded options:
+
+```bash
+# macOS/Linux
+export KIWI_API_KEY="your_api_key"
+export AMADEUS_API_KEY="your_amadeus_key"
+export AMADEUS_API_SECRET="your_amadeus_secret"
+
+# Windows PowerShell
+$env:KIWI_API_KEY="your_api_key"
+$env:AMADEUS_API_KEY="your_amadeus_key"
+$env:AMADEUS_API_SECRET="your_amadeus_secret"
+```
+
+Register free at [Kiwi Tequila](https://tequila.kiwi.com/), [Amadeus](https://developers.amadeus.com).
+
+## Example Output
 
 ```
-"Tôi muốn bay HAN → SFO, 2 người lớn + 1 trẻ em, 
-bay khoảng giữa tháng 6/2026, linh hoạt ±1 tuần"
+╔════════════════════════════════════════════════╗
+║  TRAVEL OPTIMIZATION REPORT                    ║
+║  HAN → SFO, 2A+1C, Jun 15-25, 2026           ║
+╠════════════════════════════════════════════════╣
+║                                                ║
+║  BEST OPTION: Korean Air via ICN               ║
+║  True Total: $2,115 ($705/person)              ║
+║  Saved: $885 vs baseline direct (-30%)         ║
+║                                                ║
+║  Savings Breakdown:                            ║
+║  - Optimal date shift:        -$240            ║
+║  - Hub routing via ICN:       -$345            ║
+║  - Bank card promo:           -$120            ║
+║  - Deal "KE Global Sale":     -$180            ║
+║                                                ║
+║  Flexibility: 65/100 (Economy Plus)            ║
+║  Risk: Low (schedule 90% certain)              ║
+╚════════════════════════════════════════════════╝
 ```
 
-AI sẽ tự động kích hoạt bộ skill phù hợp.
+## Key Features
 
-## 8 Skills
+### For Personal Travel
 
-| # | Skill | Mô tả | Khi nào dùng |
-|---|-------|-------|-------------|
-| 1 | **date-optimization** | Phân tích giá theo ngày, chỗ rẻ nhất | Linh hoạt ngày bay |
-| 2 | **flight-search** | Tìm vé từ nhiều nguồn + virtual interlining | Mọi lần tìm vé |
-| 3 | **fee-analysis** | Bóc tách phí ẩn, tính tổng thực trả | Khi so sánh hãng LCC vs FSC |
-| 4 | **route-optimization** | Tìm route rẻ hơn qua hub trung chuyển | Route quốc tế dài |
-| 5 | **deals-verification** | Tìm mã giảm giá, deal từ hãng + ngân hàng | Mọi lần booking |
-| 6 | **flexibility-analysis** | Phân tích rủi ro vé non-refundable | Lịch trình chưa chắc |
-| 7 | **negotiation-email** | Soạn email thương lượng giá doanh nghiệp | Doanh nghiệp 50+ chuyến/năm |
-| 8 | **hidden-city-strategy** | Phân tích hidden city (có risk disclaimer) | Nâng cao, chỉ khi được hỏi |
+- Compare 20+ flight options with true cost (all fees included)
+- Find cheapest dates within your flexibility window
+- Discover cheaper hub-based alternatives
+- Identify applicable promo codes and flash sales
+- Assess refundable vs non-refundable risk
+
+### For Corporate Travel
+
+- Generate negotiation emails with volume data
+- Track competitor pricing and market trends
+- Analyze savings opportunities per route
+- Build business case for rate renegotiation
+- Match negotiated rates to market
+
+## Safety & Ethics
+
+- **Hidden City Strategy:** Requires explicit consent + eligibility check + full legal risk disclosure
+- **Virtual Interlining:** Warns about missed connection risk and baggage rules
+- **Deal Verification:** All deals tagged with confidence level (HIGH/MEDIUM/LOW/EXPIRED)
+- **Corporate Negotiation:** Never reveals customer's max budget to airlines
+
+## Documentation
+
+- **Getting Started:** See [README.md](README.md) (this file)
+- **Project Overview & Requirements:** See [docs/project-overview-pdr.md](docs/project-overview-pdr.md)
+- **System Architecture:** See [docs/system-architecture.md](docs/system-architecture.md)
+- **Code Standards:** See [docs/code-standards.md](docs/code-standards.md)
+- **Codebase Summary:** See [docs/codebase-summary.md](docs/codebase-summary.md)
+- **Project Roadmap:** See [docs/project-roadmap.md](docs/project-roadmap.md)
 
 ## Architecture
 
 ```
 travel-optimization-engine/
-├── SKILL.md                          # Orchestrator chính
-├── README.md                         # File này
-├── LICENSE                           # MIT License
-├── CHANGELOG.md                      # Lịch sử thay đổi
-├── .gitignore                        # Chặn API keys
-├── scripts/
-│   ├── kiwi_client.py                # Kiwi API client
-│   ├── kiwi_tequila.py               # Kiwi Tequila wrapper
-│   ├── amadeus_client.py             # Amadeus API client
-│   ├── normalize.py                  # Price normalization
-│   └── config.py                     # Configuration
+├── SKILL.md                    # Root orchestrator
+├── README.md                   # This file
+├── CHANGELOG.md                # Release history
+├── docs/                       # Comprehensive documentation
+│   ├── codebase-summary.md
+│   ├── project-overview-pdr.md
+│   ├── code-standards.md
+│   ├── system-architecture.md
+│   └── project-roadmap.md
+├── scripts/                    # Shared Python utilities
+│   ├── config.py               # API credential management
+│   ├── kiwi_client.py          # Kiwi API wrapper
+│   ├── kiwi_tequila.py         # Advanced Kiwi integration
+│   ├── amadeus_client.py       # Amadeus API client
+│   └── normalize.py            # Price normalization
+├── references/                 # Shared reference data
+│   ├── airport-codes.md        # Hub airports, IATA codes
+│   ├── glossary.md             # Aviation terminology
+│   ├── user-profile-schema.md  # Traveler data structure
+│   ├── amadeus-api.md          # Amadeus API reference
+│   └── kiwi-api.md             # Kiwi API reference
+├── skills/                     # 8 specialized sub-skills
+│   ├── date-optimization/
+│   ├── flight-search/
+│   ├── fee-analysis/
+│   ├── route-optimization/
+│   ├── deals-verification/
+│   ├── flexibility-analysis/
+│   ├── negotiation-email/
+│   └── hidden-city-strategy/
 ├── assets/
-│   ├── flow-diagram.html             # Interactive workflow diagram
-│   └── report-template.md            # Template báo cáo cuối
-├── references/
-│   ├── glossary.md                   # Từ điển thuật ngữ hàng không
-│   ├── airport-codes.md              # Hub + IATA codes + alliances
-│   ├── amadeus-api.md                # Amadeus API reference
-│   ├── kiwi-api.md                   # Kiwi API reference
-│   └── user-profile-schema.md        # Schema thông tin hành khách
-└── skills/
-    ├── date-optimization/
-    │   ├── SKILL.md
-    │   └── references/pricing-patterns.md
-    ├── flight-search/
-    │   ├── SKILL.md
-    │   └── references/
-    │       ├── virtual-interlining.md
-    │       └── api-integration.md
-    ├── fee-analysis/
-    │   ├── SKILL.md
-    │   └── references/
-    │       ├── airline-fee-matrix.md
-    │       └── avoidance-strategies.md
-    ├── route-optimization/
-    │   ├── SKILL.md
-    │   └── references/hub-analysis.md
-    ├── deals-verification/
-    │   ├── SKILL.md
-    │   └── references/deal-sources.md
-    ├── flexibility-analysis/
-    │   ├── SKILL.md
-    │   └── references/fare-class-rules.md
-    ├── negotiation-email/
-    │   └── SKILL.md
-    └── hidden-city-strategy/
-        ├── SKILL.md
-        └── references/
-            ├── enforcement-levels.md
-            └── eligibility-check.md
+│   ├── flow-diagram.html       # Interactive workflow
+│   └── report-template.md      # Report template
+└── examples/
+    ├── flight-optimization-report-HAN-SFO-Jun2026.md
+    └── flight-optimization-report-HAN-SFO-Jun2026.html
 ```
-
-## 2 Chế Độ Hoạt Động
-
-### AI-Knowledge Mode (Không cần API)
-- Sử dụng kiến thức AI về giá vé, trend, airline policies
-- Đủ tốt cho phần lớn use cases
-- Không cần cài đặt gì thêm
-
-### API-Enhanced Mode (Real-time data)
-- Kết nối Kiwi Tequila API cho dữ liệu giá vé thời gian thực
-- Hỗ trợ virtual interlining (ghép vé nhiều hãng)
-- Setup:
-  ```bash
-  pip install requests
-  
-  # Windows PowerShell:
-  $env:KIWI_API_KEY="your_key_here"
-  
-  # macOS/Linux:
-  export KIWI_API_KEY="your_key_here"
-  ```
-- Đăng ký API key miễn phí tại: https://tequila.kiwi.com/
-
-## Workflow
-
-```
-Phase 1: Thu thập thông tin - Hỏi route, ngày, số người, preferences
-Phase 2: Tìm kiếm        - Chạy date-optimization + flight-search song song  
-Phase 3: Phân tích        - fee-analysis + route-optimization + deals-verification
-Phase 4: Đánh giá         - flexibility-analysis (nếu có nhiều lựa chọn)
-Phase 5: Xuất báo cáo     - Bảng so sánh cuối + recommendation
-```
-
-## Ví Dụ Output
-
-```
-╔══════════════════════════════════════════════════╗
-║  TRAVEL OPTIMIZATION REPORT                      ║
-║  HAN → SFO, 2A+1C, Jun 15-25, 2026             ║
-╠══════════════════════════════════════════════════╣
-║                                                  ║
-║  BEST OPTION: Korean Air via ICN                 ║
-║  True Total: $2,115 ($705/person)                ║
-║  Saved: $885 vs booking direct (-30%)            ║
-║                                                  ║
-║  Key Savings Breakdown:                          ║
-║  - Date shift Tue-Wed:        -$240              ║
-║  - Hub routing via ICN:       -$345              ║
-║  - Techcombank card:          -$120              ║
-║  - Deal "KE Global Sale":    -$180               ║
-║                                                  ║
-║  Flexibility Score: 65/100 (Flex Economy)        ║
-║  Risk: Low (schedule 90% certain)                ║
-╚══════════════════════════════════════════════════╝
-```
-
-## Doanh Nghiệp
-
-Skill 7 (negotiation-email) dành riêng cho doanh nghiệp:
-- Soạn email cho đội Corporate Sales của hãng bay
-- Đính kèm dữ liệu volume, route concentration, competitor pricing
-- Template follow-up + talking points nếu hãng gọi lại
-
-## Safety & Ethics
-
-- **Hidden city** (Skill 8): Yêu cầu consent rõ ràng + eligibility check + full risk disclosure
-- **Virtual interlining**: Cảnh báo rõ rủi ro tự kết nối (missed connection, không bảo hiểm delay)
-- **Deal verification**: Mọi deal đều có nhãn confidence (HIGH/MEDIUM/LOW/EXPIRED)
-- **Negotiation**: Không bao giờ tiết lộ giá tối đa của khách trong email
-
-## Live Demo
-
-Xem interactive workflow diagram: [travel-optimization-flow.vercel.app](https://travel-optimization-flow.vercel.app)
 
 ## Contributing
 
-Issues và Pull Requests luôn được chào đón! Xem [CHANGELOG.md](CHANGELOG.md) để theo dõi lịch sử thay đổi.
+Issues and pull requests welcome! See [CHANGELOG.md](CHANGELOG.md) for release history.
+
+To contribute:
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request with clear description
+4. Ensure code follows standards in [docs/code-standards.md](docs/code-standards.md)
 
 ## Credits
 
-Built by [Minh Đỗ](https://zalo.me/g/igkywu632) with Antigravity Skill Architecture Standards.
-API data powered by [Kiwi Tequila](https://tequila.kiwi.com/).
+Built by [Minh Đỗ](https://github.com/phucsystem) with Antigravity Skill Architecture Standards.
+
+Real-time flight data powered by [Kiwi Tequila](https://tequila.kiwi.com/) and [Amadeus](https://amadeus.com/).
 
 ## License
 
